@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BBC News</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            color: #1a1a1a;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* --- Top Navigation Bar --- */
+        .bbc-top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 15px;
+            height: 50px;
+            border-bottom: 1px solid #cccccc;
+            background-color: #ffffff;
+        }
+
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .top-bar-left .menu-icon,
+        .top-bar-left .search-icon {
+            font-size: 1.4em;
+            padding: 0 10px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .top-bar-left .search-icon {
+            margin-left: 5px;
+        }
+
+        .top-bar-center {
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center;    /* Center vertically */
+            width: 100%;             /* Take full width to center properly */
+        }
+
+        .top-bar-center .bbc-logo img {
+            height: 28px;
+            display: block;
+        }
+
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .top-bar-right .register-button {
+            background-color: #222222;
+            color: #ffffff;
+            padding: 8px 15px;
+            font-weight: bold;
+            font-size: 0.9em;
+            border-radius: 3px;
+            margin-right: 15px;
+        }
+
+        .top-bar-right .register-button:hover {
+            background-color: #444444;
+        }
+
+        .top-bar-right .signin-link {
+            font-weight: bold;
+            font-size: 0.9em;
+            color: #333;
+        }
+
+        .top-bar-right .signin-link:hover {
+            text-decoration: underline;
+        }
+
+        /* --- Main Category Navigation Bar --- */
+        .bbc-main-categories {
+            background-color: #ffffff;
+            border-bottom: 1px solid #cccccc;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .main-categories-nav {
+            display: flex;
+            height: 100%;
+            max-width: 1280px;
+            width: 100%;
+            padding: 0 15px;
+        }
+
+        .main-categories-nav a {
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            font-weight: bold;
+            font-size: 0.9em;
+            color: #333;
+            height: 100%;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+
+        .main-categories-nav a:hover,
+        .main-categories-nav a.active {
+            border-bottom: 3px solid #1a1a1a;
+            color: #1a1a1a;
+        }
+
+        .main-categories-nav a#cat-home.active {
+            border-bottom: 3px solid #1a1a1a;
+            color: #1a1a1a;
+        }
+
+
+        /* --- Main Content Area --- */
+        .page-content {
+            max-width: 1024px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        /* --- News Layout Grid (Based on Screenshot) --- */
+        .news-layout-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 25px;
+        }
+
+        /* --- Column Styling --- */
+        .news-column-left,
+        .news-column-center,
+        .news-column-right {
+            /* Basic column setup */
+        }
+
+        /* --- General Card Styling --- */
+        .news-card {
+            margin-bottom: 20px;
+        }
+
+        .news-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .news-card h2,
+        .news-card h3 {
+            margin: 0 0 5px 0;
+            font-size: 1.3em;
+            font-weight: bold;
+            line-height: 1.2;
+            color: #1a1a1a;
+        }
+
+        .news-card h3 {
+            font-size: 1.15em;
+        }
+
+        .news-card p {
+            margin: 0 0 8px 0;
+            font-size: 0.95em;
+            line-height: 1.4;
+            color: #4a4a4a;
+        }
+
+        .news-card .metadata {
+            font-size: 0.8em;
+            color: #5a5a5a;
+        }
+
+        .news-card .metadata time {
+            margin-right: 5px;
+        }
+
+        .news-card .metadata .category {
+            border-left: 1px solid #cccccc;
+            padding-left: 8px;
+            margin-left: 5px;
+        }
+
+        /* --- Specific Card Styles --- */
+        .news-column-center .news-card h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .news-column-right .news-card {
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 15px;
+        }
+
+        .news-column-right .news-card:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        .news-column-right .news-card h3 {
+            font-size: 1.05em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .news-column-right .news-card p {
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        /* --- Utility --- */
+        .icon {
+            display: inline-block;
+        }
+
+        .top-bar-center .bbc-logo img {
+            height: 50px;
+            width: auto;
+            display: block;
+        }
+
+        #bbc-logo img {
+            height: 120px;
+            width: auto;
+            display: block;
+        }
+
+        header {
+            background-color: white;
+            color: black;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-logo {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .header-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .header-auth {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Navigation Styles */
+        .navigation {
+            background-color: #fff;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .navigation-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 2fr 3fr 2fr;
+            gap: 20px;
+        }
+
+        .news-item {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .news-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .news-item h2 {
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+
+        .news-item p {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .news-item .details {
+            font-size: 0.8em;
+            color: #888;
+        }
+        .bbc-footer {
+
+margin-top: 20px;
+
+border-top: 1px solid #ccc;
+
+padding-top: 20px;
+
+text-align: center;
+
+font-size: 0.8em;
+
+color: #5a5a5a;
+
+}
+
+.footer-links {
+
+margin-bottom: 10px;
+
+}
+
+.footer-links a {
+
+margin: 0 5px;
+
+}
+
+.language-select {
+
+margin-bottom: 10px;
+
+}
+
+.social-links {
+
+margin-bottom: 10px;
+
+}
+
+.social-links a {
+
+margin: 0 5px;
+
+}
+
+.copyright {
+
+font-size: 0.7em;
+
+}
+  .top-bar-left .menu-icon,
+        .top-bar-left .search-icon {
+            font-size: 1.4em;
+            padding: 0 10px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .top-bar-left .search-icon {
+            margin-left: 5px;
+        }
+
+        .top-bar-center .bbc-logo img {
+            height: 28px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <!-- Top Bar -->
+        <div class="bbc-top-bar">
+            <div class="top-bar-left">
+                <span class="menu-icon"><i class="fas fa-bars"></i></span>
+                <span class="search-icon"><i class="fas fa-search"></i></span>
+            </div>
+            <div class="top-bar-center">
+                <a href="{{ url_for('index') }}" id="bbc-logo" title="BBC Home">
+                    <img src="https://www.pngall.com/wp-content/uploads/15/BBC-Logo-PNG-Image.png" alt="BBC Logo" style="height: 120px;"/>
+                </a>
+            </div>
+            <div class="top-bar-right">
+                <a href="{{ url_for('logout') }}" class="logout-link">logout</a>
+            </div>
+        </div>
+
+        <!-- Main Categories Navigation -->
+        <nav class="bbc-main-categories">
+            <div class="main-categories-nav">
+                <a href="{{ url_for('index') }}" id="cat-home" {% if request.path == url_for('index') %}class="active"{% endif %}>Home</a>
+                <a href="{{ url_for('Article') }}" id="cat-Article" {% if request.path == url_for('Article') %}class="active"{% endif %}>Article</a>
+                <a href="{{ url_for('weather') }}" id="cat-weather" {% if request.path == url_for('weather') %}class="active"{% endif %}>Weather</a>
+                <a href="{{ url_for('comment') }}" id="cat-Comment" {% if request.path == url_for('comment') %}class="active"{% endif %}>Comment</a>
+            </div>
+        </nav>
+    </header>
+   
+
+    <div class="main-content">
+        <div class="news-item">
+            <img src="https://ichef.bbci.co.uk/news/800/cpsprodpb/880b/live/11f51ae0-210e-11f0-83a1-1998ef896e82.jpg.webp" alt="News Image">
+            <a href="/ArticleA"><h2>Trump says he is 'not happy' with deadly Russian strikes on Kyiv</h2></a>
+            <p>The overnight strikes killed at least 12 people and injured 90 more, local officials have said.</p>
+            <div class="details">2 hrs ago | World</div>
+        </div>
+
+        <div class="news-item">
+            <img src="https://ichef.bbci.co.uk/news/800/cpsprodpb/d644/live/54998d70-865b-11ef-beac-1d00347925c8.jpg.webp" alt="News Image">
+            <a href="/ArticleB"><h2>Diddy's trial to start in May 2025</h2></a>
+            <p>The rap mogul denies sex trafficking and racketeering charges, plus dozens of other lawsuits alleging abuse.</p>
+            <div class="details">1 hr ago | Local</div>
+        </div>
+
+        <div class="news-item">
+            <img src="https://ichef.bbci.co.uk/news/800/cpsprodpb/3424/live/c3d23c10-210a-11f0-9c65-a5c3dc449bf3.jpg.webp" alt="News Image">
+            <a href="/ArticleC"><h2>Pakistan suspends visas for Indians after deadly Kashmir attack on tourists</h2></a>
+            <p>It comes after Delhi's retaliatory measures following a militant attack in Indian-administered Kashmir that killed 26 tourists.</p>
+            <div class="details">16 hrs ago | Asia</div>
+        </div>
+
+        <div class="news-item">
+            <img src="https://ichef.bbci.co.uk/images/ic/800xn/p0hm8vdd.jpg.webp" alt="News Image">
+            <a href="/ArticleD"><h2>Five standout cities making the world a better place</h2></a>
+            <p>The Global Destination Sustainability Index reveals the destinations that are working towards a sustainable and lower-carbon future</p>
+            <div class="details">2 hrs ago | Asia</div>
+        </div>
+
+         <div class="news-item">
+            <img src="https://ichef.bbci.co.uk/news/800/cpsprodpb/66d9/live/b8298860-21cc-11f0-8c2e-77498b1ce297.jpg.webp" alt="News Image">
+            <a href="/ArticleE"><h2>California passes Japan as fourth largest economy</h2></a>
+            <p>The US state expresses worries that President Donald Trump's tariffs could stunt future growth.</p>
+            <div class="details">3 hrs ago | World</div>
+        </div>
+
+        <div class="news-item">
+            <img src="https://ichef.bbci.co.uk/news/800/cpsprodpb/cfbe/live/afa5c5e0-20e2-11f0-9b17-b99e39a28c13.jpg.webp" alt="News Image">
+            <a href="/ArticleF"><h2>Mass food poisonings cast shadow over Indonesia's free school meals</h2></a>
+            <p>Nearly 80 students across two high schools fell sick after eating the meals this week.</p>
+            <div class="details">7 hrs ago | Asia</div>
+        </div>
+    </div>
+    <footer class="bbc-footer">
+    <a href="#"><img src="https://www.pngall.com/wp-content/uploads/15/BBC-Logo-PNG-Image.png" alt="BBC Logo" style="height: 120px; margin-bottom: 10px;"></a>
+    <div class="footer-links">
+        <a href="/index">Home</a>
+        <a href="/article">Article</a>
+        <a href="/weather">Weather</a>
+        <a href="/comment">Comment</a>
+        
+    </div>
+    <div class="language-select">
+        <select>
+            <option>BBC in other languages</option>
+            <option>English</option>
+            <option>Chinese</option>
+            <option>Spain</option>
+        </select>
+    </div>
+   
+    <div class="footer-links">
+        <a href="#">Terms of Use</a>
+        <a href="#">About the BBC</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Cookies</a>
+        <a href="#">Accessibility Help</a>
+        <a href="#">Contact the BBC</a>
+        <a href="#">Advertise with us</a>
+        <a href="#">Do not share or sell my info</a>
+        <a href="#">Contact technical support</a>
+    </div>
+    <div class="copyright">
+        Copyright 2025 BBC. All rights reserved. The BBC is not responsible for the content of external sites. <a href="#">Read about our approach to external linking.</a>
+    </div>
+</footer>
+
+<!-- Bootstrap JS and dependencies (optional, if you need Bootstrap functionalities) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll('.main-categories-nav a');
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === currentPath || (currentPath === '/' && link.id === 'cat-home')) {
+                // link.classList.add('active');
+            }
+        });
+        document.getElementById('cat-home')?.classList.add('active');
+    });
+</script>
+
+</body>
+</html>
